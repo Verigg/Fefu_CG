@@ -10,7 +10,7 @@ public:
 
     Vector2() = default;
 
-    explicit Vector2(float number = 0.f) : x(number), y(number) {};
+    explicit Vector2(float number) : x(number), y(number) {};
 
     Vector2(float x, float y) : x(x), y(y) {};
 

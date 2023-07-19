@@ -548,7 +548,7 @@ public:
         return result;
     }
 
-    static Matrix4 identity() {
+    Matrix4 identity() {
         return Matrix4(1.f);
     };
 
@@ -594,6 +594,51 @@ public:
         return Matrix4(Row(0), Row(1), Row(2), Row(3));
     };
 
+    Matrix4 translate(const Vector3& axis) {
+        Matrix4 t_matrix(*this);
+
+        t_matrix[3][0] = matrix[0][0] * axis.x + matrix[1][0] * axis.y + matrix[2][0] * axis.z + matrix[3][0];
+        t_matrix[3][1] = matrix[0][1] * axis.x + matrix[1][1] * axis.y + matrix[2][1] * axis.z + matrix[3][1];
+        t_matrix[3][2] = matrix[0][2] * axis.x + matrix[1][2] * axis.y + matrix[2][2] * axis.z + matrix[3][2];
+        t_matrix[3][3] = matrix[0][3] * axis.x + matrix[1][3] * axis.y + matrix[2][3] * axis.z + matrix[3][3];
+
+        return t_matrix;
+    }
+
+    Matrix4 rotate(float angle, Vector3 axis) const {
+        angle = angle * 3.14 / 180.0f;
+        // Вычисляем синус и косинус угла поворота
+        float cos_angle = cosf(angle);
+        float sin_angle = sinf(angle);
+
+        Vector3 normalized_axis = axis.normalize(); // Нормализуем вектор оси вращения
+        Vector3 sup = normalized_axis * (1.f - cos_angle); // Вычисляем вспомогательный вектор
+
+        Matrix4 rotation_matrix;
+
+        rotation_matrix[0][0] = cos_angle + sup.x * normalized_axis.x;
+        rotation_matrix[0][1] = sup.x * normalized_axis.y + sin_angle * normalized_axis.z;
+        rotation_matrix[0][2] = sup.x * normalized_axis.z - sin_angle * normalized_axis.y;
+        rotation_matrix[0][3] = 0.f;
+
+        rotation_matrix[1][0] = sup.y * normalized_axis.x - sin_angle * normalized_axis.z;
+        rotation_matrix[1][1] = cos_angle + sup.y * normalized_axis.y;
+        rotation_matrix[1][2] = sup.y * normalized_axis.z + sin_angle * normalized_axis.x;
+        rotation_matrix[1][3] = 0.f;
+
+        rotation_matrix[2][0] = sup.z * normalized_axis.x + sin_angle * normalized_axis.y;
+        rotation_matrix[2][1] = sup.z * normalized_axis.y - sin_angle * normalized_axis.x;
+        rotation_matrix[2][2] = cos_angle + sup.z * normalized_axis.z;
+        rotation_matrix[2][3] = 0.f;
+
+        rotation_matrix[3][0] = 0.f;
+        rotation_matrix[3][1] = 0.f;
+        rotation_matrix[3][2] = 0.f;
+        rotation_matrix[3][3] = 1.f;
+
+        return Matrix4(*this * rotation_matrix);
+    }
+
     Vector4 Row(int index) {
         if (index >= 0 && index < 4) {
             float result[4]{};
@@ -612,6 +657,66 @@ public:
         }
         return Vector4(0.f);
     };
+
+    Matrix4 lookAt(const Vector3& eye, const Vector3& target, const Vector3& worldUp) {
+        Vector3 forward = (target - eye).normalize();  // Вектор направления камеры
+        Vector3 right = worldUp.crossProduct(forward).normalize();  // Вектор правой оси
+        Vector3 up = forward.crossProduct(right).normalize();
+        Matrix4 result(1.f);
+
+        result.matrix[0][0] = right.x;
+        result.matrix[1][0] = right.y;
+        result.matrix[2][0] = right.z;
+        result.matrix[3][0] = -right.dotProduct(eye);
+
+        result.matrix[0][1] = up.x;
+        result.matrix[1][1] = up.y;
+        result.matrix[2][1] = up.z;
+        result.matrix[3][1] = -up.dotProduct(eye);
+
+        result.matrix[0][2] = forward.x;
+        result.matrix[1][2] = forward.y;
+        result.matrix[2][2] = forward.z;
+        result.matrix[3][2] = -forward.dotProduct(eye);
+
+        return result;
+    }
+
+    //aspectRatio = width/height
+    Matrix4 perspective(float fov, float aspectRatio, float nearPlane, float farPlane) {
+        assert(abs(aspectRatio - std::numeric_limits<float>::epsilon()) > static_cast<float>(0));
+
+        Matrix4 result(0);
+
+        float tanHalfFOV = std::tan(fov / 2.0f);
+        float range = farPlane - nearPlane;
+
+        result.matrix[0][0] = 1.0f / (aspectRatio * tanHalfFOV);
+        result.matrix[1][1] = 1.0f / tanHalfFOV;
+        result.matrix[2][2] = -(nearPlane + farPlane) / range;
+        result.matrix[3][2] = -(2.0f * farPlane * nearPlane) / range;
+        result.matrix[2][3] = -1.0f;
+
+
+        //Result[0][0] = static_cast<T>(1) / (aspect * tanHalfFovy);
+        //Result[1][1] = static_cast<T>(1) / (tanHalfFovy);
+        //Result[2][2] = -(zFar + zNear) / (zFar - zNear);
+        //Result[2][3] = -static_cast<T>(1);
+        //Result[3][2] = -(static_cast<T>(2) * zFar * zNear) / (zFar - zNear);
+        return result;
+    }
+
+     Matrix4 ortho(float left, float right, float bottom, float top) {
+        Matrix4 result(1.f);
+
+        result.matrix[0][0] = 2.0f / (right - left);
+        result.matrix[1][1] = 2.0f / (top - bottom);
+        result.matrix[2][2] = -1.0f;
+        result.matrix[3][0] = -(right + left) / (right - left);
+        result.matrix[3][1] = -(top + bottom) / (top - bottom);
+
+        return result;
+    }
 
     float* operator[](int row) {
         if (row == 0) return matrix[row];

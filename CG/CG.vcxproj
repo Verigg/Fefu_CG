@@ -102,16 +102,16 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\libs\SFML-2.6.0\include;C:\libs\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\libs\SFML-2.6.0\include;C:\libs\glew-2.1.0\include;C:\Users\sasha\source\repos\Fefu_CG\CG\3rd;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\libs\SFML-2.6.0\lib;C:\libs\glew-2.1.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;sfml-graphics.lib;sfml-system.lib;sfml-window.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\sasha\source\repos\Fefu_CG\CG\3rd\imgui;C:\libs\SFML-2.6.0\lib;C:\libs\glew-2.1.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;sfml-graphics.lib;sfml-system.lib;sfml-window.lib;sfml-graphics-d.lib;sfml-system-d.lib;sfml-window-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -120,24 +120,90 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\libs\SFML-2.6.0\include;C:\libs\glew-2.1.0\include;C:\Users\sasha\source\repos\Fefu_CG\CG\3rd;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\sasha\source\repos\Fefu_CG\CG\3rd\imgui;C:\libs\SFML-2.6.0\lib;C:\libs\glew-2.1.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;sfml-graphics.lib;sfml-system.lib;sfml-window.lib;sfml-graphics-d.lib;sfml-system-d.lib;sfml-window-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="3rd\imgui\imgui-SFML.cpp" />
+    <ClCompile Include="3rd\imgui\imgui.cpp" />
+    <ClCompile Include="3rd\imgui\imgui_demo.cpp" />
+    <ClCompile Include="3rd\imgui\imgui_draw.cpp" />
+    <ClCompile Include="3rd\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="3rd\stb\stb_image.cpp" />
     <ClCompile Include="Fefu_CG.cpp" />
+    <ClCompile Include="utils\modelLoader.cpp" />
+    <ClCompile Include="utils\shaderLoader.cpp" />
+    <ClCompile Include="utils\textureLoader.cpp" />
+    <ClCompile Include="utils\vboindexer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="3rd\math\mat.h" />
-    <ClInclude Include="3rd\math\math.h" />
-    <ClInclude Include="3rd\math\vec.h" />
+    <ClInclude Include="3rd\imgui\imconfig.h" />
+    <ClInclude Include="3rd\imgui\imgui-SFML.h" />
+    <ClInclude Include="3rd\imgui\imgui-SFML_export.h" />
+    <ClInclude Include="3rd\imgui\imgui.h" />
+    <ClInclude Include="3rd\imgui\imgui_internal.h" />
+    <ClInclude Include="3rd\imgui\imstb_rectpack.h" />
+    <ClInclude Include="3rd\imgui\imstb_textedit.h" />
+    <ClInclude Include="3rd\imgui\imstb_truetype.h" />
     <ClInclude Include="3rd\stb\stb_image.h" />
+    <ClInclude Include="Includes.h" />
+    <ClInclude Include="res\camera.h" />
+    <ClInclude Include="res\func.h" />
+    <ClInclude Include="res\index_buffer.h" />
+    <ClInclude Include="res\mesh.h" />
+    <ClInclude Include="res\shader.h" />
+    <ClInclude Include="res\skybox.h" />
+    <ClInclude Include="res\texture.h" />
+    <ClInclude Include="res\vertex_array.h" />
+    <ClInclude Include="res\vertex_buffer.h" />
+    <ClInclude Include="utils\modelLoader.h" />
+    <ClInclude Include="utils\shaderLoader.h" />
+    <ClInclude Include="utils\textureLoader.h" />
+    <ClInclude Include="utils\vboindexer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="glew32.dll" />
+    <None Include="sfml-graphics-2.dll" />
+    <None Include="sfml-system-2.dll" />
+    <None Include="sfml-window-2.dll" />
+    <None Include="shaders\directional\directional.fs" />
+    <None Include="shaders\directional\directional.vs" />
+    <None Include="shaders\f1.fs" />
+    <None Include="shaders\point.fs" />
+    <None Include="shaders\point.vs" />
+    <None Include="shaders\point\point.fs" />
+    <None Include="shaders\point\point.vs" />
+    <None Include="shaders\screen.fs" />
+    <None Include="shaders\screen.vs" />
+    <None Include="shaders\skybox\skybox.fs" />
+    <None Include="shaders\skybox\skybox.vs" />
+    <None Include="shaders\spot\spot.fs" />
+    <None Include="shaders\spot\spot.vs" />
+    <None Include="shaders\texture.fs" />
+    <None Include="shaders\texture.vs" />
+    <None Include="shaders\v1.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\1.jpg" />
+    <Image Include="images\1.png" />
+    <Image Include="images\11.png" />
+    <Image Include="images\skybox\rainbow_bk.png" />
+    <Image Include="images\skybox\rainbow_dn.png" />
+    <Image Include="images\skybox\rainbow_ft.png" />
+    <Image Include="images\skybox\rainbow_lf.png" />
+    <Image Include="images\skybox\rainbow_rt.png" />
+    <Image Include="images\skybox\rainbow_up.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

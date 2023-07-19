@@ -19,24 +19,168 @@
     <Filter Include="Файлы заголовков\stb">
       <UniqueIdentifier>{e56c0fb9-777a-435c-be97-cc42efc1e4ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы заголовков\glm">
+      <UniqueIdentifier>{016ab522-9232-407d-b54d-1895c8be7b15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\imgui">
+      <UniqueIdentifier>{685f82fa-b975-434e-9c61-2b1c427a694c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Fefu_CG.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="utils\textureLoader.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\modelLoader.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\shaderLoader.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="3rd\stb\stb_image.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="3rd\imgui\imgui.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="3rd\imgui\imgui_demo.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="3rd\imgui\imgui_draw.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="3rd\imgui\imgui_widgets.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="3rd\imgui\imgui-SFML.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\vboindexer.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="3rd\math\mat.h">
-      <Filter>Файлы заголовков\math</Filter>
+    <ClInclude Include="Includes.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="3rd\math\math.h">
-      <Filter>Файлы заголовков\math</Filter>
+    <ClInclude Include="utils\textureLoader.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="3rd\math\vec.h">
-      <Filter>Файлы заголовков\math</Filter>
+    <ClInclude Include="utils\modelLoader.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="res\vertex_buffer.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="res\vertex_array.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="res\camera.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="res\func.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="res\mesh.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="res\shader.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\shaderLoader.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="3rd\stb\stb_image.h">
-      <Filter>Файлы заголовков\stb</Filter>
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="3rd\imgui\imconfig.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="3rd\imgui\imgui.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="3rd\imgui\imgui_internal.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="3rd\imgui\imgui-SFML.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="3rd\imgui\imgui-SFML_export.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="3rd\imgui\imstb_rectpack.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="3rd\imgui\imstb_textedit.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="3rd\imgui\imstb_truetype.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="res\texture.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="res\index_buffer.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\vboindexer.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="res\skybox.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\v1.vs" />
+    <None Include="shaders\f1.fs" />
+    <None Include="sfml-graphics-2.dll" />
+    <None Include="sfml-system-2.dll" />
+    <None Include="sfml-window-2.dll" />
+    <None Include="glew32.dll" />
+    <None Include="shaders\texture.vs" />
+    <None Include="shaders\texture.fs" />
+    <None Include="shaders\screen.vs" />
+    <None Include="shaders\screen.fs" />
+    <None Include="shaders\point.vs" />
+    <None Include="shaders\point.fs" />
+    <None Include="shaders\spot\spot.vs" />
+    <None Include="shaders\spot\spot.fs" />
+    <None Include="shaders\skybox\skybox.vs" />
+    <None Include="shaders\skybox\skybox.fs" />
+    <None Include="shaders\point\point.fs" />
+    <None Include="shaders\point\point.vs" />
+    <None Include="shaders\directional\directional.fs" />
+    <None Include="shaders\directional\directional.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\1.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="images\1.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="images\skybox\rainbow_up.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="images\skybox\rainbow_bk.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="images\skybox\rainbow_dn.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="images\skybox\rainbow_ft.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="images\skybox\rainbow_lf.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="images\skybox\rainbow_rt.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="images\11.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
   </ItemGroup>
 </Project>

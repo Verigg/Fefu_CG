@@ -1,193 +1,164 @@
-﻿#include <iostream>
+﻿#pragma once
 
-//glew
-#include <GL/glew.h>
+#include "res/func.h"
 
-//sfml
-#include <SFML/Window.hpp>
+//#include "gui.cpp"
 
-//stb
-#define STB_IMAGE_IMPLEMENTATION
-#include "3rd/stb/stb_image.h"
-
-//math
-#include "3rd/math/math.h"
-
+#include "res/texture.h"
+#include "res/mesh.h"
+#include "res/camera.h"
+#include "res/skybox.h"
 using namespace std;
 
 int main() {
-	sf::ContextSettings settings;
-	settings.depthBits = 24; // количество битов буффера глубины
-	settings.stencilBits = 8; //количество битов буфера трафарета
-	settings.majorVersion = 4;
-	settings.minorVersion = 3;
-	settings.attributeFlags = sf::ContextSettings::Core;
+	// setup window, glew, imgui
+	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT, 32), "First Window",
+		sf::Style::Titlebar | sf::Style::Close, default_settings());
 
-	sf::Window window(sf::VideoMode(800, 600, 32), "First Window",
-		sf::Style::Titlebar | sf::Style::Close);
+	window.setVerticalSyncEnabled(true);
+	window.setActive();
 
-	glewExperimental = GL_TRUE; // включить все современные функции ogl
+	glewExperimental = GL_TRUE; 
 
-	if (GLEW_OK != glewInit()) { // включить glew
+	if (GLEW_OK != glewInit()) { 
 		cout << "Error:: glew not init =(" << endl;
 		return -1;
 	}
 
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	ImGui::SFML::Init(window);
 
 
-	GLuint VertexArrayID;
-	glGenVertexArrays(1, &VertexArrayID);
-
-	const char* vshader = 
-		"#version 330 core\n"
-		"layout (location = 0) in vec3 inPos;\n"
-		"layout (location = 1) in vec2 aTexCoords;\n"
-		"out vec2 TexCoords;\n"
-		"void main() {\n"
-		"	 TexCoords = aTexCoords;\n"
-		"	 gl_Position = vec4(inPos,1.0);\n"
-		"}\n";
-
-	const char* fshader = 
-		"#version 330 core\n"
-		"in vec2 TexCoords;\n"
-		"out vec3 OutColor;\n"
-		"uniform sampler2D tex;\n"
-		"void main() {\n"
-		"	 vec3 rgb = texture(tex, TexCoords).rgb;\n"
-		"	 OutColor = rgb;\n"
-		"}\n";
-	
-	unsigned textureID = 0;
-	glGenTextures(1, &textureID);
 
 
-	int w = 0, h = 0, c = 0;
-	unsigned char* textureData = stbi_load("./jij.jpg", &w, &h, &c, 0);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	Shader cube("shaders/texture.vs", "shaders/texture.fs");
+	Shader light("shaders/point.vs", "shaders/point.fs");
 
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	if (textureData) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
-		glGenerateMipmap(true);
-	} 
-	else {
-		cout << "ERR";
-	}
-	stbi_image_free(textureData);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	Texture face("images/1.png");
+	cube.Use();
+	cube.SetInt("material.diffuse", 1);
+	cube.SetInt("material.specular", 1);
 
 
-	int vshaderID = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vshaderID, 1, &vshader, nullptr);
-	glCompileShader(vshaderID);
-
-	int res = 0;
-	glGetShaderiv(vshaderID, GL_COMPILE_STATUS, &res);
-	if (!res) {
-		char log[512];
-		glGetShaderInfoLog(vshaderID, 512, nullptr, log);
-		cout << log;
-		return 1;
-	}
-
-	int fshaderID = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fshaderID, 1, &fshader, nullptr);
-	glCompileShader(fshaderID);
-
-	glGetShaderiv(fshaderID, GL_COMPILE_STATUS, &res);
-	if (!res) {
-		char log[512];
-		glGetShaderInfoLog(fshaderID, 512, nullptr, log);
-		cout << log;
-		return 1;
-	}
-
-	int shaderID = glCreateProgram();
-	glAttachShader(shaderID, vshaderID);
-	glAttachShader(shaderID, fshaderID);
-	glLinkProgram(shaderID);
-	glGetShaderiv(shaderID, GL_LINK_STATUS, &res);
-	if (!res) {
-		char log[512];
-		glGetShaderInfoLog(shaderID, 512, nullptr, log);
-		cout << log;
-		return 1;
-	}
-	glDeleteShader(vshaderID);
-	glDeleteShader(fshaderID);
-
-	float verts[]{
-		0.f, 0.5f, 0.f,				0.5f, -1.0f,
-		0.5f, -0.5f, 0.f,			-1.0f, 0.f,
-		-0.5f, -0.5f, 0.f,			0.f, 0.f
-	};	
-
-	unsigned indes[]{
-		0,1,2
+	Shader skybox_shader("shaders/skybox/skybox.vs", "shaders/skybox/skybox.fs");
+	std::string path = "images/skybox/rainbow_";
+	std::vector<std::string> faces{
+		path + "lf.png",
+		path + "rt.png",
+		path + "dn.png",
+		path + "up.png",
+		path + "ft.png",
+		path + "bk.png"
 	};
+	Texture sky(faces);
+	skybox_shader.Use();
+	skybox_shader.SetInt("skybox",0);
+	Skybox skybox(skybox_shader);
+	Mesh box("models/box2.obj");
+	Mesh cylinder("models/cylinder.obj");
 
-	unsigned VAO = 0, VBA = 0, IBA = 0;
-	glCreateVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBA);
-	glGenBuffers(1, &IBA);
+	camera camera;
 
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBA);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBA);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indes), indes, GL_STATIC_DRAW);
+	Mat4 model(1.0f);
+	Mat4 projection = model.perspective(radians(45.0f), static_cast<float>(WIDTH) / static_cast<float>(HEIGHT), 0.1f, 1000.0f);
+	cube.SetMat4("projection", projection);
 	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+	Vec3 pos_light_cube(1.2f, 0.0f, 2.0f);
 
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3*sizeof(float)));
-	glEnableVertexAttribArray(1);
+	Vec3 pos_light_cube_two(1.2f, 0.0f, -4.0f);
 
-	glBindVertexArray(0);
+	//
 
 
-
-
-
+	sf::Color bgColor;
+	float color[3] = { 0.f, 0.f, 0.f };
+	sf::Clock deltaClock;
+	int alpha = 0;
 	bool isGo = true;
-
 	while (isGo) {
 		sf::Event windowEvent;
+		while (window.pollEvent(windowEvent)) {
 
-		while (window.pollEvent(windowEvent)) { // обработка ивентов
 			switch (windowEvent.type)
 			{
 			case sf::Event::Closed:
 				isGo = false;
 				break;
+			case sf::Event::KeyPressed:
+				camera.KeyboardInput();
+				break;
+			case sf::Event::MouseMoved:
+				camera.update_view(window);
+				break;
 			default:
 				break;
 			}
 		}
-
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f); //отчистка экрана
-		glClear(GL_COLOR_BUFFER_BIT); //отчистка экрана
-
-		//...
-		glUseProgram(shaderID);
-		glBindVertexArray(VAO);
+		glClearColor(0.2f, 0.2f, 0.2f, 1.0f); 
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-		glUniform1i(glGetUniformLocation(shaderID, "tex"), 0);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, textureID);
+		cube.Use();
+		cube.SetVec3("viewPos", camera.GetPos());
+		cube.SetFloat("material.shininess", shininess);
 
-		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+		cube.SetVec3("dirLight.direction", Vec3(-0.2f, -1.0f, -0.3f));
+		cube.SetVec3("dirLight.ambient", Vec3(0.05f, 0.05f, 0.05f));
+		cube.SetVec3("dirLight.diffuse", Vec3(0.4f, 0.4f, 0.4f));
+		cube.SetVec3("dirLight.specular", Vec3(0.5f, 0.5f, 0.5f));
 
-		glBindVertexArray(0);
+		cube.SetVec3("pointLights[0].position", pos_light_cube * 3);
+		cube.SetVec3("pointLights[0].ambient", Vec3(0.05f, 0.05f, 0.05f)*30);
+		cube.SetVec3("pointLights[0].diffuse", Vec3(0.8f, 0.8f, 0.8f));
+		cube.SetVec3("pointLights[0].specular", specular);
+		cube.SetFloat("pointLights[0].constant", constant);
+		cube.SetFloat("pointLights[0].linear", linear);
+		cube.SetFloat("pointLights[0].quadratic", quadratic);
+
+		cube.SetVec3("pointLights[1].position", pos_light_cube_two*4);
+		cube.SetVec3("pointLights[1].ambient", Vec3(0.05f, 0.05f, 0.05f));
+		cube.SetVec3("pointLights[1].diffuse", Vec3(0.8f, 0.8f, 0.8f));
+		cube.SetVec3("pointLights[1].specular", specular);
+		cube.SetFloat("pointLights[1].constant", constant);
+		cube.SetFloat("pointLights[1].linear", linear);
+		cube.SetFloat("pointLights[1].quadratic", quadratic);
+
+		cube.SetVec3("spotLight.position", camera.GetPos());
+		cube.SetVec3("spotLight.direction", camera.GetFront());
+		cube.SetVec3("spotLight.ambient", Vec3(0.0f, 0.0f, 0.0f));
+		cube.SetVec3("spotLight.diffuse", Vec3(1.0f, 1.0f, 1.0f)); 
+		cube.SetVec3("spotLight.specular", specular);
+		cube.SetFloat("spotLight.constant", constant);
+		cube.SetFloat("spotLight.linear", linear);
+		cube.SetFloat("spotLight.quadratic", quadratic);
+		cube.SetFloat("spotLight.cutOff", cos(radians(12.5f)));
+		cube.SetFloat("spotLight.outerCutOff", cos(radians(15.0f)));
+		////
+		//face.Bind(0);
+		
+		box.Draw(light, camera, pos_light_cube*3);
+		box.Draw(light, camera, pos_light_cube_two*4);
+
+		box.Draw(cube, camera, { 5.f, 0.f, -5.f });
+
+		box.Draw(cube, camera, { 15.f, 0.f, -5.f }, -alpha, { 0.f, 0.f, -1.f });
+
+		box.Draw(cube, camera, { 25.f, sin(alpha/30.f)*10.f, -5.f}, -alpha, {0.f, 0.f, -1.f});
+
+		cylinder.Draw(cube, camera, { 35.f, 0.f, -5.f });
+
+		cylinder.Draw(cube, camera, { 45.f, 0.f, -5.f }, -alpha, { 1.f, 0.f, -1.f });
+
+		cylinder.Draw(cube, camera, { 55.f, tan(alpha / 30.f) * 10.f, -5.f }, -alpha, { 0.f, 1.f, 0.f });
+
+		alpha = (alpha + 1) % 360;
+
+		skybox.Draw(skybox_shader, camera);
+
+
 		window.display();
 	}
 
